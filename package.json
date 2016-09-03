@@ -1,0 +1,11 @@
+{
+  "name": "bugzilla-burn-up-chart",
+  "version": "0.0.0",
+  "description": "To plot a burn-up chart according to the date grabbed from a Bugzilla site.",
+  "license": "MIT",
+  "author": "Yi-Pu Guo <yipo.tw@hotmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yipo/bugzilla-burn-up-chart.git"
+  }
+}
