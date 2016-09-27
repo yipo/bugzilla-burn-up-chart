@@ -11,7 +11,14 @@ function main(site, query) {
       return parseInt($(element).children('a').text());
     }).get();
 
-    console.log(bug_list);
+    request.post(site + '/show_bug.cgi', {
+      body: querystring.stringify({ // It seems that the 'form' option of request package does not support multiple selections.
+        ctype: 'xml',
+        id: bug_list
+      })
+    }, (error, response, body) => {
+      console.log(body);
+    });
   });
 }
 
