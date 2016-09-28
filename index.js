@@ -17,7 +17,18 @@ function main(site, query) {
         id: bug_list
       })
     }, (error, response, body) => {
-      console.log(body);
+      var $ = cheerio.load(body);
+
+      var raw_data = {};
+
+      $('bug').each((index, element) => {
+        var id = $(element).children('bug_id').text();
+        var open = $(element).children('creation_ts').text();
+
+        raw_data[parseInt(id)] = { open: new Date(open) };
+      });
+
+      console.log(raw_data);
     });
   });
 }
