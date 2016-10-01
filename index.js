@@ -28,7 +28,15 @@ function main(site, query) {
         raw_data[parseInt(id)] = { open: new Date(open) };
       });
 
-      console.log(raw_data);
+      for (var id in raw_data) {
+        request(site + '/show_activity.cgi?' + querystring.stringify({ id: id }), {
+          headers: { Cookie: 'LANG=en' } // Ensure the language; English is easier to deal with.
+        }, (error, response, body) => {
+          var $ = cheerio.load(body);
+
+          console.log($('#bugzilla-body table').html());
+        });
+      }
     });
   });
 }
