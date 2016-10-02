@@ -61,7 +61,7 @@ function main(site, query) {
         raw_data[parseInt(id)] = { open: new Date(open) };
       });
 
-      async.each(bug_list, (id, callback) => {
+      async.eachLimit(bug_list, 8, (id, callback) => {
         request(site + '/show_activity.cgi?' + querystring.stringify({ id: id }), {
           headers: { Cookie: 'LANG=en' } // Ensure the language; English is easier to deal with.
         }, (error, response, body) => {
