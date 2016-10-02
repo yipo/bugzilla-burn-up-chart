@@ -69,7 +69,7 @@ function main(site, query) {
           callback();
         });
       }, (error) => {
-        console.log(raw_data);
+        console.log(JSON.stringify(raw_data));
       });
     });
   });
