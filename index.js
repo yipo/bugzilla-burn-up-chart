@@ -2,6 +2,7 @@
 var querystring = require('querystring');
 var request = require('request');
 var cheerio = require('cheerio');
+var async = require('async');
 
 function parseActivity(body, entry) {
   var $ = cheerio.load(body);
@@ -33,8 +34,6 @@ function parseActivity(body, entry) {
       }
     }
   });
-
-  console.log(entry);
 }
 
 function main(site, query) {
@@ -62,13 +61,16 @@ function main(site, query) {
         raw_data[parseInt(id)] = { open: new Date(open) };
       });
 
-      for (var id in raw_data) {
+      async.each(bug_list, (id, callback) => {
         request(site + '/show_activity.cgi?' + querystring.stringify({ id: id }), {
           headers: { Cookie: 'LANG=en' } // Ensure the language; English is easier to deal with.
         }, (error, response, body) => {
           parseActivity(body, raw_data[id]);
+          callback();
         });
-      }
+      }, (error) => {
+        console.log(raw_data);
+      });
     });
   });
 }

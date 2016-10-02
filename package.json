@@ -9,6 +9,7 @@
     "url": "https://github.com/yipo/bugzilla-burn-up-chart.git"
   },
   "dependencies": {
+    "async": "^2.0.1",
     "cheerio": "^0.22.0",
     "request": "^2.74.0"
   }
