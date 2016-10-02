@@ -3,6 +3,40 @@ var querystring = require('querystring');
 var request = require('request');
 var cheerio = require('cheerio');
 
+function parseActivity(body, entry) {
+  var $ = cheerio.load(body);
+
+  var timestamp;
+
+  $('#bugzilla-body table tr').each((index, element) => {
+    var td = $(element).children('td');
+
+    if (td.is('[rowspan]')) {
+      timestamp = new Date(td.eq(1).text());
+    }
+
+    td = td.not('[rowspan]');
+
+    if (td.eq(0).text().trim() == 'Status') {
+      switch (td.eq(2).text().trim()) {
+        case 'RESOLVED':
+          entry.solve = timestamp;
+          break;
+        case 'VERIFIED':
+          entry.verify = timestamp;
+          break;
+        case 'CLOSED':
+          entry.close = timestamp;
+          break;
+        case 'REOPENED':
+          entry = { open: entry.open };
+      }
+    }
+  });
+
+  console.log(entry);
+}
+
 function main(site, query) {
   request(site + '/buglist.cgi?' + querystring.stringify(query), (error, response, body) => {
     var $ = cheerio.load(body);
@@ -32,9 +66,7 @@ function main(site, query) {
         request(site + '/show_activity.cgi?' + querystring.stringify({ id: id }), {
           headers: { Cookie: 'LANG=en' } // Ensure the language; English is easier to deal with.
         }, (error, response, body) => {
-          var $ = cheerio.load(body);
-
-          console.log($('#bugzilla-body table').html());
+          parseActivity(body, raw_data[id]);
         });
       }
     });
